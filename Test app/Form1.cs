@@ -19,8 +19,8 @@ namespace Test_app
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 0;
-            comboBox3.SelectedIndex = 1;
+            comboBox3.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 1;
             comboBox4.SelectedIndex = 1;
         }
 
@@ -48,68 +48,119 @@ namespace Test_app
         {
             string[] lines = textBoxMain.Text.Split('\n');
             int len = lines.GetLength(0);
-            List<string> ors = new List<string>();
-            List<string> ands = new List<string>();
+            //List<string> ors = new List<string>();
+            //List<string> ands = new List<string>();
             int sublineIdx;
+            int blocks = 1;
+            int listIdx = 0;
+            bool txt1Full, txt2Full, txt3Full, txt4Full;
+
+            if (comboBox2.SelectedIndex == 1)
+                ++blocks;
+            if (comboBox3.SelectedIndex == 1)
+                ++blocks;
+            if (comboBox4.SelectedIndex == 1)
+                ++blocks;
+            List<string>[] strBlocks = new List<string>[blocks];
+            for (int i = 0; i < blocks; ++i)
+                strBlocks[i] = new List<string>();
 
             textBox1.Text = textBox1.Text.Trim(' ');
+            if ((txt1Full = !String.IsNullOrEmpty(textBox1.Text)))
+                strBlocks[listIdx].Add(textBox1.Text);
             textBox2.Text = textBox2.Text.Trim(' ');
+            if (comboBox2.SelectedIndex == 1)
+                ++listIdx; 
+            if ((txt2Full = !String.IsNullOrEmpty(textBox2.Text)))
+                strBlocks[listIdx].Add(textBox2.Text);
             textBox3.Text = textBox3.Text.Trim(' ');
+            if (comboBox3.SelectedIndex == 1)
+                ++listIdx;
+            if ((txt3Full = !String.IsNullOrEmpty(textBox3.Text)))
+                strBlocks[listIdx].Add(textBox3.Text);
             textBox4.Text = textBox4.Text.Trim(' ');
-            if (!String.IsNullOrEmpty(textBox1.Text))
-            {
-                if (comboBox1.SelectedIndex == 0)
-                    ands.Add(textBox1.Text);
-                else
-                    ors.Add(textBox1.Text);
-            }
-            if (!String.IsNullOrEmpty(textBox2.Text))
-            {
-                if (comboBox2.SelectedIndex == 0)
-                    ands.Add(textBox2.Text);
-                else
-                    ors.Add(textBox2.Text);
-            }
-            if (!String.IsNullOrEmpty(textBox3.Text))
-            {
-                if (comboBox3.SelectedIndex == 0)
-                    ands.Add(textBox3.Text);
-                else
-                    ors.Add(textBox3.Text);
-            }
-            if (!String.IsNullOrEmpty(textBox4.Text))
-            {
-                if (comboBox4.SelectedIndex == 0)
-                    ands.Add(textBox4.Text);
-                else
-                    ors.Add(textBox4.Text);
-            }
+            if (comboBox4.SelectedIndex == 1)
+                ++listIdx;
+            if ((txt4Full = !String.IsNullOrEmpty(textBox4.Text)))
+                strBlocks[listIdx].Add(textBox4.Text);
+
             textBoxMain.Clear();
             for (int i = 0; i < len; ++i)
             {
                 sublineIdx = -1;
-                foreach (string ptr in ors)
+                for (int j = 0; j < blocks; ++j)
                 {
-                    sublineIdx = lines[i].IndexOf(ptr, StringComparison.CurrentCultureIgnoreCase);
-                    if (sublineIdx != -1)
-                    {
-                        textBoxMain.Text = String.Concat(textBoxMain.Text, lines[i], "\n");
-                        break ;
-                    }
-                }
-                if (sublineIdx == -1)
-                {
-                    foreach (string ptr in ands)
+                    foreach (string ptr in strBlocks[j])
                     {
                         sublineIdx = lines[i].IndexOf(ptr, StringComparison.CurrentCultureIgnoreCase);
                         if (sublineIdx == -1)
-                            break ;
+                            break;
                     }
                     if (sublineIdx != -1)
+                    {
                         textBoxMain.Text = String.Concat(textBoxMain.Text, lines[i], "\n");
+                        break;
+                    }
                 }
+                GC.Collect();
             }
-            GC.Collect();
+
+
+            //if (!String.IsNullOrEmpty(textBox1.Text))
+            //{
+            //    if (comboBox1.SelectedIndex == 0)
+            //        ands.Add(textBox1.Text);
+            //    else
+            //        ors.Add(textBox1.Text);
+            //}
+            //if (!String.IsNullOrEmpty(textBox2.Text))
+            //{
+            //    if (comboBox2.SelectedIndex == 0)
+            //        ands.Add(textBox2.Text);
+            //    else
+            //        ors.Add(textBox2.Text);
+            //}
+            //if (!String.IsNullOrEmpty(textBox3.Text))
+            //{
+            //    if (comboBox3.SelectedIndex == 0)
+            //        ands.Add(textBox3.Text);
+            //    else
+            //        ors.Add(textBox3.Text);
+            //}
+            //if (!String.IsNullOrEmpty(textBox4.Text))
+            //{
+            //    if (comboBox4.SelectedIndex == 0)
+            //        ands.Add(textBox4.Text);
+            //    else
+            //        ors.Add(textBox4.Text);
+            //}
+
+        //    textBoxMain.Clear();
+        //    for (int i = 0; i < len; ++i)
+        //    {
+        //        sublineIdx = -1;
+        //        foreach (string ptr in ors)
+        //        {
+        //            sublineIdx = lines[i].IndexOf(ptr, StringComparison.CurrentCultureIgnoreCase);
+        //            if (sublineIdx != -1)
+        //            {
+        //                textBoxMain.Text = String.Concat(textBoxMain.Text, lines[i], "\n");
+        //                break ;
+        //            }
+        //        }
+        //        if (sublineIdx == -1)
+        //        {
+        //            foreach (string ptr in ands)
+        //            {
+        //                sublineIdx = lines[i].IndexOf(ptr, StringComparison.CurrentCultureIgnoreCase);
+        //                if (sublineIdx == -1)
+        //                    break ;
+        //            }
+        //            if (sublineIdx != -1)
+        //                textBoxMain.Text = String.Concat(textBoxMain.Text, lines[i], "\n");
+        //        }
+        //    }
+        //    GC.Collect();
         }
 
 
